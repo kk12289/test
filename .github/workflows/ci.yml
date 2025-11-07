@@ -24,17 +24,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          python -c "import sys; print('PY', sys.version)"
-          python -c "import pkgutil; print('PKGS', [m.name for m in pkgutil.iter_modules()][:10])"
 
-      - name: Show workspace
+      - name: Run tests with coverage
         run: |
-          pwd
-          ls -la
-          echo "---- tree ----"
-          ls -R
+          pytest
+          echo "---- coverage html in htmlcov/ ----"
 
-      - name: Run pytest (verbose)
-        run: |
-          python -c "import sys, pprint; pprint.pprint(sys.path)"
-          pytest -vv
+      - name: Upload coverage HTML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: htmlcov/
+          retention-days: 7
