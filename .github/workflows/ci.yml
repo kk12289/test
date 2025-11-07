@@ -23,20 +23,19 @@ jobs:
       - name: Install deps
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt   
-          
+          pip install -r requirements.txt
+
       - name: Lint (Ruff)
         run: ruff check . --format=github
 
-
-      - name: Run tests with coverage (force html)
+      # ← pytest-cov を使わず、coverageで確実に収集
+      - name: Run tests & build coverage HTML (robust)
         run: |
-            pytest --maxfail=1 --cov=. --cov-report=term-missing --cov-report=html:htmlcov
-            # 念のため index.html を確実に作る
-            coverage html -d htmlcov --title="Coverage Report"
-            echo "----- list htmlcov -----"
-            ls -la htmlcov
-            test -f htmlcov/index.html && echo "OK: index.html generated" || (echo "NG: no index"; exit 2)
+          coverage run -m pytest
+          coverage html -d htmlcov --title="Coverage Report"
+          echo "----- list htmlcov -----"
+          ls -la htmlcov || true
+          test -f htmlcov/index.html && echo "OK: index.html generated" || (echo "NG: no index"; exit 2)
 
       - name: Upload coverage HTML
         if: always()
@@ -44,5 +43,5 @@ jobs:
         with:
           name: coverage-html
           path: htmlcov/
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 7
