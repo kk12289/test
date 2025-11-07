@@ -26,7 +26,8 @@ jobs:
           pip install -r requirements.txt
 
       - name: Lint (Ruff)
-        run: ruff check . --format=github
+        run: ruff check . --output-format=github
+
 
       # ← pytest-cov を使わず、coverageで確実に収集
       - name: Run tests & build coverage HTML (robust)
