@@ -8,6 +8,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: .
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,6 +24,17 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          python -c "import sys; print('PY', sys.version)"
+          python -c "import pkgutil; print('PKGS', [m.name for m in pkgutil.iter_modules()][:10])"
 
-      - name: Run pytest
-        run: pytest -q
+      - name: Show workspace
+        run: |
+          pwd
+          ls -la
+          echo "---- tree ----"
+          ls -R
+
+      - name: Run pytest (verbose)
+        run: |
+          python -c "import sys, pprint; pprint.pprint(sys.path)"
+          pytest -vv
