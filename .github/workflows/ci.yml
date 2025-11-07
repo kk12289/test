@@ -25,15 +25,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # ここで明示的に --cov と --cov-report=html を指定（pytest.ini が無くても生成される）
       - name: Run tests with coverage (force html)
         run: |
-          pytest --maxfail=1 --cov=src --cov-report=term-missing --cov-report=html
-          echo "----- after pytest, check htmlcov -----"
-          ls -la
-          echo "----- tree -----"
-          ls -R || true
-          test -d htmlcov && echo "htmlcov exists" || (echo "NO htmlcov generated"; exit 2)
+            pytest --maxfail=1 --cov=. --cov-report=term-missing --cov-report=html:htmlcov
+            # 念のため index.html を確実に作る
+            coverage html -d htmlcov --title="Coverage Report"
+            echo "----- list htmlcov -----"
+            ls -la htmlcov
+            test -f htmlcov/index.html && echo "OK: index.html generated" || (echo "NG: no index"; exit 2)
 
       - name: Upload coverage HTML
         if: always()
