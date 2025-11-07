@@ -1,0 +1,8 @@
+line-length = 100
+target-version = "py311"
+
+# 基本のエラー/警告＋インポート整形
+extend-select = ["F", "E", "W", "I"]
+
+# 必要なら無視したいルールを追記（例）
+# extend-ignore = ["E402"]  # top-level import位置の警告を無視したい時など
